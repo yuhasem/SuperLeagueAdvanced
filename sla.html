@@ -1,0 +1,647 @@
+<DOCTYPE html5>
+<html>
+<head>
+	<title>Super League Advanced!</title>
+	<link rel="stylesheet" type="text/css" href="sla.css" />
+	<script type="text/javascript" src="jss.min.js"></script>
+	<script type="text/javascript" src="namemaker.js"></script>
+	<script type="text/javascript" src="sla.js"></script>
+	<script type="text/javascript" src="brackets.js"></script>
+	<script type="text/javascript" src="managers.js"></script>
+	<script type="text/javascript" src="acheivements.js"></script>
+</head>
+<body onload="onload()">
+	<div class="title">Super League Advanced</div>
+	<div class="gameplay">
+		<div class="tab" id="roster">
+			<input type="radio" id="tab-roster" name="tab-group" checked>
+			<label for="tab-roster">Roster</label>
+			<div class="content">
+				Lineup:
+				<table class="lineup">
+				<thead>
+					<tr>
+						<td>Striker</td><td>Forward</td><td>Forward</td><td>Mid-Fielder</td><td>Mid-Fielder</td><td>Defender</td><td>Defender</td><td>Keeper</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<table class="player" id="stri" draggable="true" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
+								<tr>
+									<td class="name" id="stri-name">A. Name</td><td></td><td class="stri-injury"></td>
+								</tr>
+								<tr>
+									<td>Strength:</td><td class="up-button"><button id="stri-str-but">+</button></td><td class="stat strength" id="stri-str">5</td>
+								</tr>
+								<tr>
+									<td>Skill:</td><td class="up-button"><button id="stri-skl-but">+</button></td><td class="stat skill" id="stri-skl">5</td>
+								</tr>
+								<tr>
+									<td>Endurance:</td><td class="up-button"><button id="stri-end-but">+</button></td><td class="stat endurance" id="stri-end">5</td>
+								</tr>
+								<tr>
+									<td>Charisma:</td><td class="up-button"><button id="stri-chr-but">+</button></td><td class="stat charisma" id="stri-chr">5</td>
+								</tr>
+								<tr>
+									<td>Clutch:</td><td class="up-button"><button id="stri-clt-but">+</button></td><td class="stat clutch" id="stri-clt">5</td>
+								</tr>
+								<tr>
+									<td>Points Left</td><td class="points" id="stri-points-left">0</td><td></td>
+								</tr>
+								<tr>
+									<td>Cost Per Game:</td><td></td><td id="stri-cost-per-game">0</td>
+								</tr>
+								<tr class="contract-req">
+									<td>Contract Seasons Left</td><td></td><td id="stri-contract">0</td>
+								</tr>
+								<tr class="recruit-req">
+									<td><button id="stri-offer">Offer New Salary</button></td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<table class="player" id="for1" draggable="true" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
+								<tr>
+									<td class="name" id="for1-name">A. Name</td><td></td><td class="for1-injury"></td>
+								</tr>
+								<tr>
+									<td>Strength:</td><td class="up-button"><button id="for1-str-but">+</button></td><td class="stat strength" id="for1-str">5</td>
+								</tr>
+								<tr>
+									<td>Skill:</td><td class="up-button"><button id="for1-skl-but">+</button></td><td class="stat skill" id="for1-skl">5</td>
+								</tr>
+								<tr>
+									<td>Endurance:</td><td class="up-button"><button id="for1-end-but">+</button></td><td class="stat endurance" id="for1-end">5</td>
+								</tr>
+								<tr>
+									<td>Charisma:</td><td class="up-button"><button id="for1-chr-but">+</button></td><td class="stat charisma" id="for1-chr">5</td>
+								</tr>
+								<tr>
+									<td>Clutch:</td><td class="up-button"><button id="for1-clt-but">+</button></td><td class="stat clutch" id="for1-clt">5</td>
+								</tr>
+								<tr>
+									<td>Points Left</td><td class="points" id="for1-points-left">0</td><td></td>
+								</tr>
+								<tr>
+									<td>Cost Per Game:</td><td></td><td id="for1-cost-per-game">0</td>
+								</tr>
+								<tr class="contract-req">
+									<td>Contract Seasons Left</td><td></td><td id="for1-contract">0</td>
+								</tr>
+								<tr class="recruit-req">
+									<td><button id="for1-offer">Offer New Salary</button></td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<table class="player" id="for2" draggable="true" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
+								<tr>
+									<td class="name" id="for2-name">A. Name</td><td></td><td class="for2-injury"></td>
+								</tr>
+								<tr>
+									<td>Strength:</td><td class="up-button"><button id="for2-str-but">+</button></td><td class="stat strength" id="for2-str">5</td>
+								</tr>
+								<tr>
+									<td>Skill:</td><td class="up-button"><button id="for2-skl-but">+</button></td><td class="stat skill" id="for2-skl">5</td>
+								</tr>
+								<tr>
+									<td>Endurance:</td><td class="up-button"><button id="for2-end-but">+</button></td><td class="stat endurance" id="for2-end">5</td>
+								</tr>
+								<tr>
+									<td>Charisma:</td><td class="up-button"><button id="for2-chr-but">+</button></td><td class="stat charisma" id="for2-chr">5</td>
+								</tr>
+								<tr>
+									<td>Clutch:</td><td class="up-button"><button id="for2-clt-but">+</button></td><td class="stat clutch" id="for2-clt">5</td>
+								</tr>
+								<tr>
+									<td>Points Left</td><td class="points" id="for2-points-left">0</td><td></td>
+								</tr>
+								<tr>
+									<td>Cost Per Game:</td><td></td><td id="for2-cost-per-game">0</td>
+								</tr>
+								<tr class="contract-req">
+									<td>Contract Seasons Left</td><td></td><td id="for2-contract">0</td>
+								</tr>
+								<tr class="recruit-req">
+									<td><button id="for2-offer">Offer New Salary</button></td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<table class="player" id="mid1" draggable="true" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
+								<tr>
+									<td class="name" id="mid1-name">A. Name</td><td></td><td class="mid1-injury"></td>
+								</tr>
+								<tr>
+									<td>Strength:</td><td class="up-button"><button id="mid1-str-but">+</button></td><td class="stat strength" id="mid1-str">5</td>
+								</tr>
+								<tr>
+									<td>Skill:</td><td class="up-button"><button id="mid1-skl-but">+</button></td><td class="stat skill" id="mid1-skl">5</td>
+								</tr>
+								<tr>
+									<td>Endurance:</td><td class="up-button"><button id="mid1-end-but">+</button></td><td class="stat endurance" id="mid1-end">5</td>
+								</tr>
+								<tr>
+									<td>Charisma:</td><td class="up-button"><button id="mid1-chr-but">+</button></td><td class="stat charisma" id="mid1-chr">5</td>
+								</tr>
+								<tr>
+									<td>Clutch:</td><td class="up-button"><button id="mid1-clt-but">+</button></td><td class="stat clutch" id="mid1-clt">5</td>
+								</tr>
+								<tr>
+									<td>Points Left</td><td class="points" id="mid1-points-left">0</td><td></td>
+								</tr>
+								<tr>
+									<td>Cost Per Game:</td><td></td><td id="mid1-cost-per-game">0</td>
+								</tr>
+								<tr class="contract-req">
+									<td>Contract Seasons Left</td><td></td><td id="mid1-contract">0</td>
+								</tr>
+								<tr class="recruit-req">
+									<td><button id="mid1-offer">Offer New Salary</button></td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<table class="player" id="mid2" draggable="true" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
+								<tr>
+									<td class="name" id="mid2-name">A. Name</td><td></td><td class="mid2-injury"></td>
+								</tr>
+								<tr>
+									<td>Strength:</td><td class="up-button"><button id="mid2-str-but">+</button></td><td class="stat strength" id="mid2-str">5</td>
+								</tr>
+								<tr>
+									<td>Skill:</td><td class="up-button"><button id="mid2-skl-but">+</button></td><td class="stat skill" id="mid2-skl">5</td>
+								</tr>
+								<tr>
+									<td>Endurance:</td><td class="up-button"><button id="mid2-end-but">+</button></td><td class="stat endurance" id="mid2-end">5</td>
+								</tr>
+								<tr>
+									<td>Charisma:</td><td class="up-button"><button id="mid2-chr-but">+</button></td><td class="stat charisma" id="mid2-chr">5</td>
+								</tr>
+								<tr>
+									<td>Clutch:</td><td class="up-button"><button id="mid2-clt-but">+</button></td><td class="stat clutch" id="mid2-clt">5</td>
+								</tr>
+								<tr>
+									<td>Points Left</td><td class="points" id="mid2-points-left">0</td><td></td>
+								</tr>
+								<tr>
+									<td>Cost Per Game:</td><td></td><td id="mid2-cost-per-game">0</td>
+								</tr>
+								<tr class="contract-req">
+									<td>Contract Seasons Left</td><td></td><td id="mid2-contract">0</td>
+								</tr>
+								<tr class="recruit-req">
+									<td><button id="mid2-offer">Offer New Salary</button></td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<table class="player" id="def1" draggable="true" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
+								<tr>
+									<td class="name" id="def1-name">A. Name</td><td></td><td class="def1-injury"></td>
+								</tr>
+								<tr>
+									<td>Strength:</td><td class="up-button"><button id="def1-str-but">+</button></td><td class="stat strength" id="def1-str">5</td>
+								</tr>
+								<tr>
+									<td>Skill:</td><td class="up-button"><button id="def1-skl-but">+</button></td><td class="stat skill" id="def1-skl">5</td>
+								</tr>
+								<tr>
+									<td>Endurance:</td><td class="up-button"><button id="def1-end-but">+</button></td><td class="stat endurance" id="def1-end">5</td>
+								</tr>
+								<tr>
+									<td>Charisma:</td><td class="up-button"><button id="def1-chr-but">+</button></td><td class="stat charisma" id="def1-chr">5</td>
+								</tr>
+								<tr>
+									<td>Clutch:</td><td class="up-button"><button id="def1-clt-but">+</button></td><td class="stat clutch" id="def1-clt">5</td>
+								</tr>
+								<tr>
+									<td>Points Left</td><td class="points" id="def1-points-left">0</td><td></td>
+								</tr>
+								<tr>
+									<td>Cost Per Game:</td><td></td><td id="def1-cost-per-game">0</td>
+								</tr>
+								<tr class="contract-req">
+									<td>Contract Seasons Left</td><td></td><td id="def1-contract">0</td>
+								</tr>
+								<tr class="recruit-req">
+									<td><button id="def1-offer">Offer New Salary</button></td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<table class="player" id="def2" draggable="true" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
+								<tr>
+									<td class="name" id="def2-name">A. Name</td><td></td><td class="def2-injury"></td>
+								</tr>
+								<tr>
+									<td>Strength:</td><td class="up-button"><button id="def2-str-but">+</button></td><td class="stat strength" id="def2-str">5</td>
+								</tr>
+								<tr>
+									<td>Skill:</td><td class="up-button"><button id="def2-skl-but">+</button></td><td class="stat skill" id="def2-skl">5</td>
+								</tr>
+								<tr>
+									<td>Endurance:</td><td class="up-button"><button id="def2-end-but">+</button></td><td class="stat endurance" id="def2-end">5</td>
+								</tr>
+								<tr>
+									<td>Charisma:</td><td class="up-button"><button id="def2-chr-but">+</button></td><td class="stat charisma" id="def2-chr">5</td>
+								</tr>
+								<tr>
+									<td>Clutch:</td><td class="up-button"><button id="def2-clt-but">+</button></td><td class="stat clutch" id="def2-clt">5</td>
+								</tr>
+								<tr>
+									<td>Points Left</td><td class="points" id="def2-points-left">0</td><td></td>
+								</tr>
+								<tr>
+									<td>Cost Per Game:</td><td></td><td id="def2-cost-per-game">0</td>
+								</tr>
+								<tr class="contract-req">
+									<td>Contract Seasons Left</td><td></td><td id="def2-contract">0</td>
+								</tr>
+								<tr class="recruit-req">
+									<td><button id="def2-offer">Offer New Salary</button></td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<table class="player" id="keep" draggable="true" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
+								<tr>
+									<td class="name" id="keep-name">A. Name</td><td></td><td class="keep-injury"></td>
+								</tr>
+								<tr>
+									<td>Strength:</td><td class="up-button"><button id="keep-str-but">+</button></td><td class="stat strength" id="keep-str">5</td>
+								</tr>
+								<tr>
+									<td>Skill:</td><td class="up-button"><button id="keep-skl-but">+</button></td><td class="stat skill" id="keep-skl">5</td>
+								</tr>
+								<tr>
+									<td>Endurance:</td><td class="up-button"><button id="keep-end-but">+</button></td><td class="stat endurance" id="keep-end">5</td>
+								</tr>
+								<tr>
+									<td>Charisma:</td><td class="up-button"><button id="keep-chr-but">+</button></td><td class="stat charisma" id="keep-chr">5</td>
+								</tr>
+								<tr>
+									<td>Clutch:</td><td class="up-button"><button id="keep-clt-but">+</button></td><td class="stat clutch" id="keep-clt">5</td>
+								</tr>
+								<tr>
+									<td>Points Left</td><td class="points" id="keep-points-left">0</td><td></td>
+								</tr>
+								<tr>
+									<td>Cost Per Game:</td><td></td><td id="keep-cost-per-game">0</td>
+								</tr>
+								<tr class="contract-req">
+									<td>Contract Seasons Left</td><td></td><td id="keep-contract">0</td>
+								</tr>
+								<tr class="recruit-req">
+									<td><button id="keep-offer">Offer New Salary</button></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</tbody>
+				</table>
+				<p id="p-subs">
+				<span id="substitutes-word">Substitutes:</span>
+				<div id="subs">
+				</div>
+				</p>
+				<p class="title-block" id="p-train">
+				<span id="trainer-word">Trainers: <span id="trainer-num">0</span><span>
+				<div id="trainer">
+					<p class="description-block">
+						Each Trainer gives your players an extra <span id="trainer-str">0</span> Strength and <span id="trainer-end">0</span> Endurance every time they level up. <span id="trainer-charisma"></span>
+					</p>
+					<button id="trainer-buy">Hire Another Trainer</button>
+					Cost: <span id="trainer-cost">0</span>
+				</div>
+				</p>
+				<p class="title-block" id="p-coach">
+				<span id="coach-word">Coaches: <span id="coach-num">0</span></span>
+				<div id="coach">
+					<p class="description-block">
+						Each Coach gives your players an extra <span id="coach-skl">0</span> Skill and <span id="coach-clt">0</span> Clutch every time they level up. <span id="coach-charisma"></span>
+					</p>
+					<button id="coach-buy">Hire Another Coach</button>
+					Cost: <span id="coach-cost">0</span>
+				</div>
+				</p>
+				<p id="p-manager">
+				<span id="managers-word">Managers:</span>
+				<div id="manager">
+				</div>
+				</p>
+			</div>
+		</div>
+		<div class="tab" id="sched">
+			<input type="radio" id="tab-sched" name="tab-group">
+			<label for="tab-sched">Schedule</label>
+			<div class="content">
+				<p>
+					<button id="next-game">Play Next Game</button>
+					<button id="next-season">Play Next Season</button>
+					<button id="start-playoffs">Start Playoffs</button>
+					<button id="start-promos">Start Promotions</button>
+				</p>
+				<div class="game-over-time" id="sched-game-over-time">
+					<button id="sched-skip-game">Skip to End of Game</button>
+					<div class="score"><span id="sched-yScore">0</span> - <span id="sched-oScore">0</span></div>
+					<div class="total-time"><span id="sched-total-time-done">0:00</span><span id="sched-total-time-togo">0:00</span></div>
+					<div class="quarter-time"><span id="sched-quarter-time-done">0:00</span><span id="sched-quarter-time-togo">0:00</span></div>
+					<div class="game-over-time-table">
+						<div class="scores">
+							<span id="sched-q1-s"></span><span id="sched-q2-s"></span><span id="sched-q3-s"></span><span id="sched-q4-s"></span>
+						</div>
+						<div class="bars">
+							<span><div class="progress"><span class="progress-bar" id="sched-q1-f"></span></div></span><span><div class="progress"><span class="progress-bar" id="sched-q2-f"></span></div></span><span><div class="progress"><span class="progress-bar" id="sched-q3-f"></span></div></span><span><div class="progress"><span class="progress-bar" id="sched-q4-f"></span></div></span>
+						</div>
+					</div>
+					<div class="ots" id="sched-ots">
+					</div>
+					<div class="game-stat possesion-time">
+						<div class="offsetter"><span>Possesion Time</span></div>
+						<span class="left-num" id="sched-yPosTime">0:00</span><span class="left-bar" id="sched-yPosTimeBar"></span><span class="right-bar" id="sched-oPosTimeBar"></span><span class="right-num" id="sched-oPosTime">0:00</span>
+					</div>
+					<div class="game-stat shots">
+						<div class="offsetter"><span>Shots</span></div>
+						<span class="left-num" id="sched-yShots">0</span><span class="left-bar" id="sched-yShotsBar"></span><span class="right-bar" id="sched-oShotsBar"></span><span class="right-num" id="sched-oShots">0</span>
+					</div>
+					<div class="game-stat possesion-time">
+						<div class="offsetter"><span>Shots on Goal</span></div>
+						<span class="left-num" id="sched-ySog">0</span><span class="left-bar" id="sched-ySogBar"></span><span class="right-bar" id="sched-oSogBar"></span><span class="right-num" id="sched-oSog">0</span>
+					</div>
+				</div>
+				This Season:
+				<table class="schedule">
+				<thead>
+					<tr>
+						<td>Opponent</td><td>Outcome</td><td>Score</td>
+					</tr>
+				</thead>
+				<tbody id="schedule">
+				
+				</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="tab" id="league">
+			<input type="radio" id="tab-league" name="tab-group">
+			<label for="tab-league">League</label>
+			<div class="content">
+				<p>Current League: <span id="league-name">Casual</span></p>
+				<p id="league-type-details"></p>
+				Teams in League:
+				<table class="league-teams">
+				<thead>
+					<tr>
+						<td>Place</td><td>Name</td><td>Wins</td><td>Losses</td><td>Points For</td><td>Points Against</td>
+					</tr>
+				</thead>
+				<tbody id="league-teams-body">
+				</tbody>
+				</table>
+				Team Details:
+				<table class="league-details">
+				<thead>
+					<tr>
+						<td>Team Name</td><td>Season Record</td><td>Roster Rundown</td><td>
+					</tr>
+				</thead>
+				<tbody id="league-details">
+					
+				</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="tab" id="recruit">
+			<input type="radio" id="tab-recruit" name="tab-group">
+			<label for="tab-recruit">Recruitment</label>
+			<div class="content">
+				<div id="recruit-list">
+				</div>
+			</div>
+		</div>
+		<div class="tab" id="titles">
+			<input type="radio" id="tab-titles" name="tab-group">
+			<label for="tab-titles">Titles</label>
+			<div class="content">
+				Titles:
+				<div id="titles-content">
+				</div>
+				<br>
+				Achievements:
+				<div id="achieve-content">
+				</div>
+			</div>
+		</div>
+		<div class="tab" id="playoffs">
+			<input type="radio" id="tab-playoffs" name="tab-group">
+			<label for="tab-playoffs" id="playoff-label">Playoffs</label>
+			<div class="content">
+				<p>
+					<button id="playoff-game">Play Next Game</button>
+					<button id="playoff-next-season">Play Next Season</button>
+					<button id="playoff-start-playoffs">Start Playoffs</button>
+					<button id="playoff-start-promos">Start Promotions</button>
+				</p>
+				<p id="playoff-type-details"></p>
+				<div class="game-over-time" id="po-game-over-time">
+					<button id="po-skip-game">Skip to End of Game</button>
+					<div class="score"><span id="po-yScore">0</span> - <span id="po-oScore">0</span></div>
+					<div class="total-time"><span id="po-total-time-done">0:00</span><span id="po-total-time-togo">0:00</span></div>
+					<div class="quarter-time"><span id="po-quarter-time-done">0:00</span><span id="po-quarter-time-togo">0:00</span></div>
+					<div class="game-over-time-table">
+						<div class="scores">
+							<span id="po-q1-s"></span><span id="po-q2-s"></span><span id="po-q3-s"></span><span id="po-q4-s"></span>
+						</div>
+						<div class="bars">
+							<span><div class="progress"><span class="progress-bar" id="po-q1-f"></span></div></span><span><div class="progress"><span class="progress-bar" id="po-q2-f"></span></div></span><span><div class="progress"><span class="progress-bar" id="po-q3-f"></span></div></span><span><div class="progress"><span class="progress-bar" id="po-q4-f"></span></div></span>
+						</div>
+					</div>
+					<div class="ots" id="po-ots">
+					</div>
+					<div class="game-stat possesion-time">
+						<div class="offsetter"><span>Possesion Time</span></div>
+						<span class="left-num" id="po-yPosTime">0:00</span><span class="left-bar" id="po-yPosTimeBar"></span><span class="right-bar" id="po-oPosTimeBar"></span><span class="right-num" id="po-oPosTime">0:00</span>
+					</div>
+					<div class="game-stat shots">
+						<div class="offsetter"><span>Shots</span></div>
+						<span class="left-num" id="po-yShots">0</span><span class="left-bar" id="po-yShotsBar"></span><span class="right-bar" id="po-oShotsBar"></span><span class="right-num" id="po-oShots">0</span>
+					</div>
+					<div class="game-stat possesion-time">
+						<div class="offsetter"><span>Shots on Goal</span></div>
+						<span class="left-num" id="po-ySog">0</span><span class="left-bar" id="po-ySogBar"></span><span class="right-bar" id="po-oSogBar"></span><span class="right-num" id="po-oSog">0</span>
+					</div>
+				</div>
+				<table class="bracket" id="bracket">
+				</table>
+				<table class="playoff-teams">
+				<thead>
+					<tr>
+						<td>Seed</td><td>Team</td><td>Place</td><td>Record</td>
+					</tr>
+				</thead>
+				<tbody id="playoff-teams-body">
+				</tbody>
+				</table>
+				<ol id="playoff-matches">
+				</ol>
+			</div>
+		</div>
+		<div class="tab" id="promos">
+			<input type="radio" id="tab-promos" name="tab-group">
+			<label for="tab-promos" id="promo-label">Promos</label>
+			<div class="content">
+				<p>
+					<button id="promo-game">Play Next Game</button>
+					<button id="promo-next-season">Play Next Season</button>
+					<button id="promo-start-playoffs">Start Playoffs</button>
+					<button id="promo-start-promos">Start Promotions</button>
+				</p>
+				<p id="bracket-type-details"></p>
+				<div class="game-over-time" id="promo-game-over-time">
+					<button id="promo-skip-game">Skip to End of Game</button>
+					<div class="score"><span id="promo-yScore">0</span> - <span id="promo-oScore">0</span></div>
+					<div class="total-time"><span id="promo-total-time-done">0:00</span><span id="promo-total-time-togo">0:00</span></div>
+					<div class="quarter-time"><span id="promo-quarter-time-done">0:00</span><span id="promo-quarter-time-togo">0:00</span></div>
+					<div class="game-over-time-table">
+						<div class="scores">
+							<span id="promo-q1-s"></span><span id="promo-q2-s"></span><span id="promo-q3-s"></span><span id="promo-q4-s"></span>
+						</div>
+						<div class="bars">
+							<span><div class="progress"><span class="progress-bar" id="promo-q1-f"></span></div></span><span><div class="progress"><span class="progress-bar" id="promo-q2-f"></span></div></span><span><div class="progress"><span class="progress-bar" id="promo-q3-f"></span></div></span><span><div class="progress"><span class="progress-bar" id="promo-q4-f"></span></div></span>
+						</div>
+					</div>
+					<div class="ots" id="promo-ots">
+					</div>
+					<div class="game-stat possesion-time">
+						<div class="offsetter"><span>Possesion Time</span></div>
+						<span class="left-num" id="promo-yPosTime">0:00</span><span class="left-bar" id="promo-yPosTimeBar"></span><span class="right-bar" id="promo-oPosTimeBar"></span><span class="right-num" id="promo-oPosTime">0:00</span>
+					</div>
+					<div class="game-stat shots">
+						<div class="offsetter"><span>Shots</span></div>
+						<span class="left-num" id="promo-yShots">0</span><span class="left-bar" id="promo-yShotsBar"></span><span class="right-bar" id="promo-oShotsBar"></span><span class="right-num" id="promo-oShots">0</span>
+					</div>
+					<div class="game-stat possesion-time">
+						<div class="offsetter"><span>Shots on Goal</span></div>
+						<span class="left-num" id="promo-ySog">0</span><span class="left-bar" id="promo-ySogBar"></span><span class="right-bar" id="promo-oSogBar"></span><span class="right-num" id="promo-oSog">0</span>
+					</div>
+				</div>
+				<div class="bracket" id="bracket-promo">
+				</div>
+				<ul id="promo-teams">
+				</ul>
+				<ol id="promo-matches">
+				</ol>
+				Team Details:
+				<table class="league-details">
+				<thead>
+					<tr>
+						<td>Team Name</td><td>Roster Rundown</td><td>
+					</tr>
+				</thead>
+				<tbody id="promo-details">
+					
+				</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="tab" id="help">
+			<input type="radio" id="tab-help" name="tab-group">
+			<label for="tab-help" id="help-label">Help/About</label>
+			<div class="content">
+				<p>
+				Super League Advanced is an active incremental game where you manage a sports team and attempt to become the world champion!
+				</p>
+				<p>
+				The Roster tab is where you can see all the players on your team. By playing, your players will gain experience and level up. When they level up, their stats will increase and you'll be able to assign points to further increase their stats. By hiring trainers and coaches you can further increase the amount of stats they gain when they level up. You can swap your players positions in the roster by dragging and dropping them to the new position.
+				</p>
+				<p>
+				Your team has 8 players on the main roster:
+				<ul>
+					<li>Striker: Strikers score points based on Skill and Clutch</li>
+					<li>2 Forwards: Forwards will increase how many shots you get with Strength and how many shots on goal you get with Skill</li>
+					<li>2 Mid-Fielders: Mid-Fielders will increase your possesion time with higher Strength</li>
+					<li>2 Defenders: Defenders will block your opponent from getting shots with Strength and block your opponent from getting shots on goal with Skill</li>
+					<li>Keeper: Keepers block your opponent from scoring based on Skill and Clutch</li>
+				</ul>
+				</p>
+				<p>
+				In addition, some stats will increase the performance of your players in all roles:
+				<ul>
+					<li>Endurance will make players perform better later in the game, and even better in overtimes</li>
+					<li>Charisma will improve the performance of players next to a player in the roster</li>
+					<li>Clutch will increase a players performance based on how close the game is</li>
+				</ul>
+				<p>
+				<p>
+				The Schedule tab is where you can see what opponents you'll be facing. Press "Play Next Game" at the top to square off against your next opponent! Each game has 4 quarters (15:00 each) and the team with the highest points at the end is the winner. If the score is tied, overtimes (10:00 each) will be played until one team is definitvely ahead. No Ties!
+				</p>
+				<p>
+				The League tab is where you can see your standing against all the teams you're facing. You can also check out the stats for players on other teams. Teams are placed based on the most number of wins first, then by the most number of points scored in this season, then by the least number of points scored against them.
+				</p>
+				<p>
+				If you do well enough in the regular season, you'll join playoffs where you can fight against the other top teams in the league for that seasons title. If you do well enough in playoffs, you'll get to play a promotion series against a team from a higher league. Win there and you'll be able to face tougher opponents next season and fight for more glory. Advance through enough leagues, and you'll soon be battling for the World Championships!
+				</p>
+				<p>
+				Your team will earn money by playing games. The amount of money you earn per game is based on the league you're in and the charisma of the players on both teams (including benched players). As you earn more money, you'll unlock the ability to buy managers which give you new effects or unlock new portions of the game. One manager will seek sponsorships for your team so you can make more money for every game you play. One manager will allow you to recruit new players with better stats. There are plenty to unlock, all with varying effects.
+				</p>
+				<p>
+				Some other things to note: Players who start playing later will gain stats quicker. If your players can't overcome a league, try recruiting some newer players and level them up! Players want to be paid for their skills. In higher leagues, players may leave your team if they're offered a better salary at another team!
+				</p>
+				<p>
+				<em>Good Luck and Have Fun!</em> or not. I can't tell you what to do.
+				</p>
+				<p>
+				Super League Advanced alpha-1 presented by 14flash and hosted on Github Pages. Like the game? Hate the game? Leave feedback in the reddit thread!
+				</p>
+				<p>
+				Currently Planned Features:
+				<ul>
+					<li>Game Saving/Loading</li>
+					<li>Rebalancing</li>
+					<li>An actual tutorial instead of this text dump</li>
+					<li>More content (leagues will be more unique with different sizes and playoffs)</li>
+					<li>More managers (growth spying, idle mode, etc.)</li>
+					<li>Prestige System</li>
+					<li>More achievements</li>
+					<li>Basic AI so that opponents get tougher to face</li>
+				</ul>
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="summary">
+		<p>
+		</p>
+		<p>
+			<div>Your Team Name: <span id="your-team-name"></span></div>
+			<div>Change Team Name: <input type="text" id="team-name-change"></input></div>
+		</p>
+		<p>
+			<div>Money: <span id="your-team-money">0</span></div>
+			<div id="sponsorships">Sponsorships: <span id="your-team-sponsors">0</span>/game</div>
+			<div>Earnings: <span id="your-team-earnings">0</span>/game</div>
+			<div>Total Player Salaries: <span id="your-team-spending">0</span>/game</div>
+			<div>Net Money: <span id="your-team-net-money">0</span>/game (+charisma bonus)</div>
+		</p>
+		<p>
+			<div>Season:</div>
+			<div>League: <span id="your-team-league"></span></div>
+			<div>Record: <span id="your-team-record"></span></div>
+			<div>Points For/Against: <span id="your-team-points"></span></div>
+			<div>Place: <span id="your-team-place"></span></div>
+		</p>
+		<p>
+			<div>All Time:</div>
+			<div>Money Earned: <span id="your-team-alltime-earnings">0</span></div>
+			<div>Record: <span id="your-team-alltime-record"></span></div>
+			<div>Points For/Against: <span id="your-team-alltime-points"></span></div>
+			<div>Highest League: <span id="your-team-alltime-league"></span></div>
+		</p>
+	</div>
+	<div class="newsreel" id="news">
+		
+	</div>
+</body>
+</html>

@@ -1,0 +1,249 @@
+body {
+	margin: 0px;
+}
+.gameplay {
+	position: relative;
+	min-height: 550px;;
+	overflow-y: auto;
+	clear: both;
+	width: 75%;
+	padding-left: 10px;
+}
+.tab {
+	float: left;
+	background-color: white;
+}
+.tab label {
+	padding: 10px 30px;
+	border: 1px black solid;
+	border-bottom: 0px;
+	margin-left: -1px;
+	position: relative;
+	left: 1px;
+	font-size: 20px;
+}
+.tab [type=radio] {
+	display: none;
+}
+.content {
+	position: absolute;
+	top: 34px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: 20px;
+	background: lightyellow;
+	overflow-y: auto;
+}
+[type=radio]:checked ~ label {
+	z-index: 2;
+	background-color: lightyellow;
+}
+[type=radio]:checked ~ label ~ .content {
+	z-index: 1;
+}
+.title {
+	height: 10%;
+	width: 100%;
+	background-color: blue;
+	color: white;
+	font-size: 40px;
+	font-weight: bold;
+	text-align: center;
+}
+.summary {
+	overflow-y: auto;
+	position: fixed;
+	top: 10%;
+	right: 0px;
+	height: 80%;
+	width: 20%;
+}
+.newsreel {
+	position: fixed;
+	bottom: 3px;
+	right: 0px;
+	width: 20%;
+	height: 20%;
+	overflow-y: auto;
+	padding: 8px;
+}
+.win {
+	background-color: green;
+}
+.loss {
+	background-color: red;
+}
+#substitutes-word {
+	display: block;
+	padding: 0px 10px;
+}
+#subs span{
+	display: inline;
+	width: 15%;
+	float: left;
+	margin: 5px;
+}
+.league-details thead td {
+	padding: 0px 10px;
+}
+.league-details tbody td {
+	border-top: 1px black solid;
+}
+#next-season{
+	display: hidden;
+}
+.player td:first-child {
+	text-align: right;
+}
+.player .name:first-child {
+	text-align: left;
+}
+.points {
+	text-align: center;
+}
+.player {
+	font-size: 85%;
+	background-color: lightgray;
+	height: 100%;
+}
+.up-button > button:disabled{
+	background-color: #faa;
+}
+.up-button > button:enabled{
+	background-color: lightgreen;
+}
+#recruit ul {
+	list-style-type: none;
+}
+#recruit li {
+	display: inline;
+	width: 15%;
+	float: left;
+	margin: 5px;
+}
+#trainer-word {
+	clear: left;
+}
+#coach-word {
+	clear: left;
+}
+#p-subs {
+	clear: left;
+}
+.progress{
+	height: 10px;
+	border: 1px black solid;
+}
+.progress-bar{
+	display: block;
+	height: 100%;
+	background-color: green;
+	position: relative;
+	top: 0px;
+}
+.game-over-time {
+	width: 75%;
+	padding: 0px 30px;
+	padding: 0px 30px;
+}
+.score {
+	font-size: 2em;
+	width: 100%;
+	text-align: center;
+}
+.total-time {
+	width: 100%;
+}
+.total-time > span:first-child {
+	display: inline-block;
+	width: 50%;
+	text-align: left;
+}
+.total-time > span:nth-child(2){
+	display: inline-block;
+	width: 50%;
+	text-align: right;
+}
+.game-over-time-table{
+	width: 100%;
+}
+.bars{
+	width: 100%;
+	display:block;
+}
+.bars > span{
+	width: 25%;
+	display: inline-block;
+	margin: 0px;
+	padding: 0px;
+}
+.scores > span {
+	width: 25%;
+	display: inline-block;
+	text-align: center;
+	margin: 0px;
+	padding: 0px;
+}
+.quarter-time {
+	width: 100%;
+}
+.quarter-time > span:first-child {
+	display: inline-block;
+	width: 50%;
+	text-align: left;
+}
+.quarter-time > span:nth-child(2){
+	display: inline-block;
+	width: 50%;
+	text-align: right;
+}
+.offseter{
+	position: relative;
+	height: 0px;
+	width: 0px;
+}
+.offseter span{
+	position: absolute;
+}
+.left-num {
+	text-align: right;
+}
+.left-bar {
+	background-color: green;
+	height: 20px;
+}
+.right-bar {
+	background-color: red;
+	height: 20px;
+}
+.right-num {
+	text-align: left;
+}
+.game-stat span {
+	display: inline-block;
+}
+.bottom {
+	border-bottom: 1px solid black;
+}
+.left {
+	border-left: 1px solid black;
+}
+.b-title {
+	font-weight: bold;
+}
+.spacing {
+	width: 20px;
+}
+.ots {
+	margin-left: 40%;
+	width: 20%;
+	text-align: center;
+}
+.description-block{
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+.title-block {
+	margin-bottom: 5px;
+}
