@@ -732,6 +732,7 @@ function playPlayerGame(game){
 					game.loser = game.team1;
 				}
 				clearInterval(m_interval);
+				m_interval = undefined;
 				finishGame(game);
 				updateGameUI(game, 4, (game.ots > 0 ? 40 : 60));
 				if (state === "reg"){
@@ -759,6 +760,7 @@ function playPlayerGame(game){
 function skipToEndOfGame(){
 	if (m_interval){
 		clearInterval(m_interval);
+		m_interval = undefined;
 		var game = playerTeamCons.schedule[currentGame-1];
 		for (var i = intervalTick; i < 240; i++){
 			playTick(game, Math.min(4, Math.floor(i/60)+1));
