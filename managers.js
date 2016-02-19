@@ -1,4 +1,10 @@
-function Manager (displayName = "", cost = 0, growth = 1, maxLevel = -1, descrip = "", idName = "1") {
+function Manager (displayName, cost, growth, maxLevel, descrip, idName) {
+	displayName = displayName || "";
+	cost = cost || 0;
+	growth = growth || 1;
+	maxLevel = maxLevel || -1;
+	descrip = descrip || "";
+	idName = idName || "1";
 	this.displayName = displayName;
 	this.level = 0;
 	this.baseCost = cost;
