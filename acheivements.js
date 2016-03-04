@@ -1,4 +1,9 @@
-function Achieve (title = "", descrip = "", awardedFor = "", id = 0, displayId = 0) {
+function Achieve (title, descrip, awardedFor, id, displayId) {
+	title = title || "";
+	descrip = descrip || "";
+	awardedFor = awardedFor || "";
+	id = id || 0;
+	displayId = displayId || 0;
 	this.title = title;
 	this.description = descrip;
 	this.awardedFor = awardedFor; //Maybe keep this

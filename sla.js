@@ -1,7 +1,8 @@
 /****************
 Class Definitions
 ****************/
-function Player(tier = 0) {
+function Player(tier) {
+	tier = tier || 0;
 	this.name = newname();
 	var A = 1.35; var B = 1.35; var C = 2; var s1 = 10.5*Math.pow(A, tier); var s2 = C*Math.pow(B, tier); var D = -s2/2; //Bal
 	this.strength = s1 + (Math.random()*s2 + D); 
@@ -55,7 +56,8 @@ Player.prototype.assignPoint = function (stat) {
 	updateRosterUI();
 }
 
-Player.prototype.decideOffer = function (offer, length = 0, team) {
+Player.prototype.decideOffer = function (offer, length, team) {
+	length = length || 0;
 	if (team === playerTeamCons){
 		if (season == this.lastOfferMadeOn[0] && currentGame == this.lastOfferMadeOn[1]){
 			if (team === playerTeamCons){
@@ -193,7 +195,8 @@ Team.prototype.earnMoney = function (money) {
 	}
 }
 
-Team.prototype.addSponsor = function (sponsor, percent=false) {
+Team.prototype.addSponsor = function (sponsor, percent) {
+	percent = percent || false;
 	if (!percent) {
 		this.sponsors += sponsor;
 	} else {
@@ -204,7 +207,8 @@ Team.prototype.addSponsor = function (sponsor, percent=false) {
 	}
 }
 
-Team.prototype.updateMoney = function (delta = 0) {
+Team.prototype.updateMoney = function (delta) {
+	delta = delta || 0;
 	var salaries = 0;
 	for (var i = 0; i < this.roster.length; i++){
 		salaries += parseInt(this.roster[i].salary);
@@ -316,7 +320,9 @@ Match.prototype.updateWins = function (game) {
 	}
 }
 
-function Bracket(l = 0, h = 0) {
+function Bracket(l, h) {
+	l = l || 0;
+	h = h || 0;
 	this.matches = [];
 	this.matchTier = []; //will be used for display purposes?
 	this.advancesTo = []; //will be used to place the winner of a match into the next match
@@ -2622,7 +2628,8 @@ function createLeagues(loading){
 	leagues[25].name = "True Professional";
 }
 
-function createRecruits(loading=false) {
+function createRecruits(loading) {
+	loading = loading || false;
 	recruits = [];
 	if (version == 1){
 		var r = JSON.parse(localStorage.getItem('recruits'));
