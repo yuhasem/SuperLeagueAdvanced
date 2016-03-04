@@ -4,21 +4,16 @@ Class Definitions
 function Player(tier = 0) {
 	this.name = newname();
 	var A = 1.35; var B = 1.35; var C = 2; var s1 = 10.5*Math.pow(A, tier); var s2 = C*Math.pow(B, tier); var D = -s2/2; //Bal
-	var strengthBase = s1 + (Math.random()*s2 + D);
-	var skillBase = s1 + (Math.random()*s2 + D);
-	var charismaBase = s1 + (Math.random()*s2 + D);
-	var enduranceBase = s1 + (Math.random()*s2 + D);
-	var clutchBase = s1 + (Math.random()*s2 + D);
-	this.strength = strengthBase; 
-	this.strengthGrowth = (Math.random()*0.1 + 0.05 + season*(Math.random()*0.02 + 0.02))*strengthBase;
-	this.skill = skillBase;
-	this.skillGrowth = (Math.random()*0.1 + 0.05 + season*(Math.random()*0.02 + 0.02))*skillBase;
-	this.charisma = charismaBase;
-	this.charismaGrowth = (Math.random()*0.1 + 0.05 + season*(Math.random()*0.02 + 0.02))*charismaBase;
-	this.endurance = enduranceBase;
-	this.enduranceGrowth = (Math.random()*0.1 + 0.05 + season*(Math.random()*0.02 + 0.02))*enduranceBase;
-	this.clutch = clutchBase;
-	this.clutchGrowth = (Math.random()*0.1 + 0.05 + season*(Math.random()*0.02 + 0.02))*clutchBase;
+	this.strength = s1 + (Math.random()*s2 + D); 
+	this.strengthGrowth = (Math.random()*0.1 + 0.05 + season*(Math.random()*0.02 + 0.02))*this.strength;
+	this.skill = s1 + (Math.random()*s2 + D);
+	this.skillGrowth = (Math.random()*0.1 + 0.05 + season*(Math.random()*0.02 + 0.02))*this.skill;
+	this.charisma = s1 + (Math.random()*s2 + D);
+	this.charismaGrowth = (Math.random()*0.1 + 0.05 + season*(Math.random()*0.02 + 0.02))*this.charisma;
+	this.endurance = s1 + (Math.random()*s2 + D);
+	this.enduranceGrowth = (Math.random()*0.1 + 0.05 + season*(Math.random()*0.02 + 0.02))*this.endurance;
+	this.clutch = s1 + (Math.random()*s2 + D);
+	this.clutchGrowth = (Math.random()*0.1 + 0.05 + season*(Math.random()*0.02 + 0.02))*this.clutch;
 	this.team = undefined;
 	this.salary = 1; //pay per game
 	this.contract = 0; //How many seasons left before can be bought again.
@@ -233,7 +228,7 @@ Team.prototype.firePlayer = function (index) {
 
 function League() {
 	this.teams = [];
-	this.sortedTeams = []
+	this.sortedTeams = [];
 	this.todemote = 0;
 	this.topromote = 0;
 	this.playoffs = 0;
@@ -245,8 +240,8 @@ function League() {
 }
 
 function Game() {
-	this.team1 = 0;
-	this.team2 = 0;
+	this.team1 = -1;
+	this.team2 = -1;
 	this.team1pos = 0;
 	this.team2pos = 0;
 	this.team1shots = 0;
@@ -258,17 +253,17 @@ function Game() {
 	this.team1points = 0;
 	this.team2points = 0;
 	this.played = false;
-	this.winner = 0;
-	this.loser = 0;
+	this.winner = -1;
+	this.loser = -1;
 	this.ots = 0; //Overtimes
 	this.scores = [{1: 0, 2: 0}, {1: 0, 2: 0}, {1: 0, 2: 0}, {1: 0, 2: 0}];
 }
 
 function Match(bestOf) {
-	this.team1 = 0;
-	this.team2 = 0;
-	this.winner = 0;
-	this.loser = 0;
+	this.team1 = -1;
+	this.team2 = -1;
+	this.winner = -1;
+	this.loser = -1;
 	this.bestOf = bestOf;
 	this.games = [];
 	this.team1wins = 0;
@@ -521,7 +516,7 @@ var dispNews = new Array(20);
 
 var intervalTick = 0;
 var m_interval;
-var allTime = {
+var allTime = { //Needs to be saved TODO
 	wins: 0,
 	loss: 0,
 	pointsFor: 0,
@@ -535,13 +530,28 @@ On Load
 ******/
 function onload() {
 	//Finish Constant Initialization
+	version = JSON.parse(localStorage.getItem('version'));
+	version = version || 0;
+	
+	if (version > 0){
+		state = localStorage.getItem('state');
+		currentLeague = localStorage.getItem('curLeague');
+		currentGame = localStorage.getItem('curGame');
+		allTime = JSON.parse(localStorage.getItem('allTime'));
+		allTime.money = parseFloat(allTime.money)
+	}
+	
+	createLeagues(version > 0);
+	createRecruits(version > 0);
+	
 	makeManagers();
 	makeAchievements();
 	
-	createLeagues();
-	createRecruits();
-	
-	nextSeason();
+	if (version == 0){
+		nextSeason();
+	} else {
+		sortAllTeams();
+	}
 	
 	//Assign Button Click Actions
 	var nextGameEl = document.getElementById("next-game");
@@ -1015,10 +1025,16 @@ function nextSeason() {
 					playingThisRound[t1] = 0;
 					playingThisRound[t2] = 0;
 				} else {
+					//THis shit isn't working how it's supposed to, I think its time to rethink/rewrite this
 					j--;
-					var g = league.teams[j].schedule[league.teams[j].schedule.length-1];
-					var t1 = j;
+					var g = league.teams[j].schedule.pop(); //[league.teams[j].schedule.length-1];
+					var t1 = league.teams.indexOf(g.team1);
 					var t2 = league.teams.indexOf(g.team2);
+					if (t1 == j){
+						league.teams[t2].schedule.pop();
+					} else {
+						league.teams[t1].schedule.pop();
+					}
 					offset = (t1 < t2 ? (t2 - t1) + 1 : (t2 + playingThisRound.length - t1) + 1);
 					playingThisRound[t1] = 1;
 					playingThisRound[t2] = 1;
@@ -1435,7 +1451,7 @@ function updateScheduleUI() {
 		}
 		rowEl.appendChild(oppEl);
 		var outEl = document.createElement("td");
-		if (sched[i].winner == 0){
+		if (sched[i].winner == -1){
 			outEl.innerHTML = " -- ";
 		} else {
 			if (sched[i].winner == playerTeamCons){
@@ -1448,7 +1464,7 @@ function updateScheduleUI() {
 		}
 		rowEl.appendChild(outEl);
 		var scoreEl = document.createElement("td");
-		scoreEl.innerHTML = (sched[i].team1 == playerTeamCons ? sched[i].team1points + "-" + sched[i].team2points : sched[i].team2points + "-" + sched[i].team1points)
+		scoreEl.innerHTML = (sched[i].team1 === playerTeamCons ? sched[i].team1points + "-" + sched[i].team2points : sched[i].team2points + "-" + sched[i].team1points)
 							+ (sched[i].ots > 0 ? " " + sched[i].ots + "OT" : "");
 		rowEl.appendChild(scoreEl);
 		scheduleTable.appendChild(rowEl);
@@ -1642,9 +1658,9 @@ function updatePlayoffUI() {
 			}
 			for (var j = 0; j < games.length; j++){
 				var listEl = document.createElement("li");
-				listEl.innerHTML = (games[j].team1 == 0 ? "TBD" : games[j].team1.name) +
+				listEl.innerHTML = (games[j].team1 == -1 ? "TBD" : games[j].team1.name) +
 							   " vs. " +
-							   (games[j].team2 == 0 ? "TBD" : games[j].team2.name) +
+							   (games[j].team2 == -1 ? "TBD" : games[j].team2.name) +
 							   " (" + games[j].team1points + "-" + games[j].team2points + ") " +
 							   (games[j].ots > 0 ? " " + games[j].ots + "OT" : "");
 				matchEl.appendChild(listEl);
@@ -1734,9 +1750,9 @@ function updatePromosUI() {
 			}
 			for (var j = 0; j < games.length; j++){
 				var listEl = document.createElement("li");
-				listEl.innerHTML = (games[j].team1 == 0 ? "TBD" : games[j].team1.name) +
+				listEl.innerHTML = (games[j].team1 == -1 ? "TBD" : games[j].team1.name) +
 							   " vs. " +
-							   (games[j].team2 == 0 ? "TBD" : games[j].team2.name) +
+							   (games[j].team2 == -1 ? "TBD" : games[j].team2.name) +
 							   " (" + games[j].team1points + "-" + games[j].team2points + ") " +
 							   (games[j].ots > 0 ? " " + games[j].ots + "OT" : "");
 				matchEl.appendChild(listEl);
@@ -2228,7 +2244,6 @@ function drop(ev){
 	updateRosterUI(); //Readds event listeners
 }
 
-/*Saving/Loading
 function gameSave(){
 	//Things we should save:
 	//  leagues (Make sure to not store recursively)(This will actually take care of most of the information)
@@ -2238,7 +2253,7 @@ function gameSave(){
 	//  version -> forward compatibility in case more/less informatin needs to be stored
 	//  playerTeamCons -> How do we assign this in a way that is retrievable?
 	//  currentGame/currentLeague
-	//Most everything else should be determined at start up (downloaded fresh in case of update)
+	//Most everything else should be determined at start up (downloaded fresh in case of passive update)
 	
 	//With all objects as fields, I need to return the stringify of that object (actuall makes playoffBracket easier, in a way)
 	localStorage.setItem('leagues', JSON.stringify(leagues, function (key, val){
@@ -2262,6 +2277,17 @@ function gameSave(){
 			}
 			return val;
 		}
+		if (key === 'resultsRank'){
+			var teamIndexes = [];
+			for (var i = 0; i < this[key].length; i++){
+				if (this[key][i]){
+					teamIndexes.push(this[key][i].league.teams.indexOf(this[key][i]));
+				} else {
+					teamIndexes.push(undefined);
+				}
+			}
+			return JSON.stringify(teamIndexes);
+		}
 		if (key === 'league'){
 			return 0;
 		}
@@ -2269,8 +2295,8 @@ function gameSave(){
 			return 0;
 		}
 		if (key === 'team1' || key === 'team2' || key === 'winner' || key === 'loser'){
-			if (this[key] == 0){
-				return 0;
+			if (this[key] == -1){
+				return -1;
 			} else {
 				return this[key].league.teams.indexOf(this[key]);
 			}
@@ -2300,8 +2326,8 @@ function gameSave(){
 				return 0;
 			}
 			if (key === 'team1' || key === 'team2' || key === 'winner' || key === 'loser'){
-				if (this[key] == 0){
-					return "n"; //This doesn't happen for some reason?
+				if (this[key] == -1){
+					return -1;
 				} else {
 					for (var i = 0; i < promotions.length; i++){
 						for (var j = 0; j < promotions[i].teams.length; j++){
@@ -2315,142 +2341,15 @@ function gameSave(){
 			}
 			return v;
 		}));
+		//Set the promotion index of playerTeamCons 'playerPromoInd'
+		localStorage.setItem('playerPromoInd', (promote ? currentLeague : currentLeague-1));
+		//Set the index of the player in that promotions teams list 'playerInd'
+		localStorage.setItem('playerInd', promotions[(promote ? currentLeague : currentLeague-1)].teams.indexOf(playerTeamCons));
 	} else {
 		localStorage.setItem('playerInd', leagues[currentLeague].teams.indexOf(playerTeamCons));
 	}
+	localStorage.setItem('allTime', JSON.stringify(allTime));
 	localStorage.setItem('version', 1);
-}
-
-function gameLoad(){
-	//This won't work. We need to do this during creation because PROTOTYPES AREN'T STORED IN JSON
-	//return true or false. That way we know if we should build a new game or continue with the loaded one
-	var version = localStorage.getItem('version');
-	if (version == 1){
-		var l = localStorage.getItem('leagues');
-		leagues = JSON.parse(l);
-		for (var i = 0; i < leagues.length; i++){
-			leagues[i].sortedTeams = [];
-			for (var j = 0; j < leagues[i].teams.length; j++){
-				var team = leagues[i].teams[j];
-				team.league = leagues[i];
-				leagues[i].sortedTeams.push(team);
-				for (var k = 0; k < team.roster.length; k++){
-					team.roster[k].team = team;
-				}
-				for (var k = 0; k < team.substitutes.length; k++){
-					team.substitutes[k].team = team;
-				}
-				for (var k = 0; k < team.schedule.length; k++){
-					if (team.schedule[k].team1 == "n"){
-						team.schedule[k].team1 = 0;
-					} else {
-						team.schedule[k].team1 = leagues[i].teams[team.schedule[k].team1];
-					}
-					if (team.schedule[k].team2 == "n"){
-						team.schedule[k].team2 = 0;
-					} else {
-						team.schedule[k].team2 = leagues[i].teams[team.schedule[k].team2];
-					}
-					if (team.schedule[k].winner == "n"){
-						team.schedule[k].winner = 0;
-					} else {
-						team.schedule[k].winner = leagues[i].teams[team.schedule[k].winner];
-					}
-					if (team.schedule[k].loser == "n"){
-						team.schedule[k].loser = 0;
-					} else {
-						team.schedule[k].loser = leagues[i].teams[team.schedule[k].loser];
-					}
-				}
-			}
-			if (leagues[i].playoffBracket){
-				for (var j = 0; j < leagues[i].playoffBracket.teams.length; j++){
-					leagues[i].playoffBracket.teams[j] = leagues[i].teams[leagues[i].playoffBracket.teams[j]];
-				}
-			}
-		}
-		sortAllTeams();
-		var r = localStorage.getItem('recruits');
-		recruits = JSON.parse(r);
-		var t = localStorage.getItem('titles');
-		titles = JSON.parse(t);
-		var a = localStorage.getItem('achievements');
-		achievements = JSON.parse(a);
-		state = localStorage.getItem('state');
-		currentGame = localStorage.getItem('curGame');
-		currentLeague = localStorage.getItem('curLeague');
-		if (state === 'promo' || state === 'pre-promo'){
-			var p = localStorage.getItem('promotions');
-			promotions = JSON.parse(p);
-			for (var prom = 0; prom < promotions.length; prom++){
-				var promotion = promotions[prom];
-				for (var i = 0; i < promotion.matches.length; i++){
-					if (typeof team.schedule[i] === Game){
-						if (team.schedule[i].team1 == "n"){
-							team.schedule[i].team1 = 0;
-						} else {
-							team.schedule[i].team1 = promotion.teams[team.schedule[i].team1];
-						}
-						if (team.schedule[i].team2 == "n"){
-							team.schedule[i].team2 = 0;
-						} else {
-							team.schedule[i].team2 = promotion.teams[team.schedule[i].team2];
-						}
-						if (team.schedule[i].winner == "n"){
-							team.schedule[i].winner = 0;
-						} else {
-							team.schedule[i].winner = promotion.teams[team.schedule[i].winner];
-						}
-						if (team.schedule[i].loser == "n"){
-							team.schedule[i].loser = 0;
-						} else {
-							team.schedule[i].loser = promotion.teams[team.schedule[i].loser];
-						}
-					} else {
-						if (team.schedule[i].team1 == "n"){
-							team.schedule[i].team1 = 0;
-						} else {
-							team.schedule[i].team1 = promotion.teams[team.schedule[i].team1];
-						}
-						if (team.schedule[i].team2 == "n"){
-							team.schedule[i].team2 = 0;
-						} else {
-							team.schedule[i].team2 = promotion.teams[team.schedule[i].team2];
-						}
-						for (var j = 0; j < team.schedule[i].games.length; j++){
-							var game = team.schedule[i].game[j];
-							if (game.team1 = "n"){
-								game.team1 = 0;
-							} else {
-								game.team1 = promotion.teams[game.team1];
-							}
-							if (game.team2 = "n"){
-								game.team2 = 0;
-							} else {
-								game.team2 = promotion.teams[game.team2];
-							}
-							if (game.winner = "n"){
-								game.winner = 0;
-							} else {
-								game.winner = promotion.teams[game.winner];
-							}
-							if (game.loser = "n"){
-								game.loser = 0;
-							} else {
-								game.loser = promotion.teams[game.loser];
-							}
-						}
-					}
-				}
-			}
-		} else {
-			var p = localStorage.getItem('playerInd');
-			playerTeamCons = leagues[currentLeague].teams[p];
-		}
-		return true;
-	} else {
-		return false;
-	}
 }
 
 function gameImport(){
@@ -2460,7 +2359,30 @@ function gameImport(){
 function gameExport(){
 	//Not yet implemented
 }
-*/
+
+function wipeSave(){
+	//This gives the possibility to undo wipes, if they don't overwirte what's left behind
+	localStorage.setItem("version", 0);
+	//onLoad();
+}
+
+function restoreSave(){
+	//Try to restore a save by resetting the version to our current save version.
+	localStorage.setItem("version", 1);
+	//onLoad();
+}
+
+function destroySave(){
+	//This option saves the space in your browser's cache
+	localStorage.setItem("version",0);
+	localStorage.setItem("leagues", 0);
+	localStorage.setItem("recruits", 0);
+	localStorage.setItem("titles", 0);
+	localStorage.setItem("achievements", 0);
+	localStorage.setItem("state", 0);
+	localStorage.setItem("promotions", 0);
+}
+
 function replaceId(fromStr, toStr, el){
 	el.id = el.id.replace(fromStr, toStr);
 	for (var i = 0; i < el.children.length; i++){
@@ -2468,14 +2390,20 @@ function replaceId(fromStr, toStr, el){
 	}
 }
 
-function createLeagues(loading=false){
+function createLeagues(loading){
+	loading = loading || false;
+	if (loading){
+		var loadedLeagues = JSON.parse(localStorage.getItem('leagues'));
+	}
 	for (var i = 0; i < numLeagues; i++){
 		leagues.push(new League());
 	}
 	for (var i = 0; i < numLeagues-1; i++){
 		promotionTypes[i] = Promotion2TeamBO3;
-	}
+	} //This loop to be unrolled eventually
 	//(most of) This for loop will need to be separated out when we diversify the leagues, sorry future me.
+	//var leaguesSizes = [16, 16, 24, 32, 40, 32, 32, 32, 12, 16, 20, 32, 40, 40, 32, 48, 48, 32, 16, 32, 32, 16, 16, 16, 16, 32];
+	var leaguesSizes = [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16];
 	for (var k = 0; k < numLeagues; k++){
 		league = leagues[k];
 		league.topromote = 1;
@@ -2483,16 +2411,78 @@ function createLeagues(loading=false){
 		league.playoffs = 4;
 		league.playoffType = Bracket4TeamMinimal;
 		league.payPerGame = 10*(k+1);
-		for (var i = 0; i < 16; i++){
+		for (var i = 0; i < leaguesSizes[k]; i++){
 			var team = new Team();
 			for (var j = 0; j < 8; j++){
 				var newPlayer = new Player(k);
+				if (loading){
+					copyPlayer(loadedLeagues[k].teams[i].roster[j], newPlayer);
+				}
 				team.roster.push(newPlayer);
 				newPlayer.team = team;
+			}
+			if (loading){
+				copyTeam(loadedLeagues[k].teams[i], team);
+				for (var j = 0; j < team.maxSubs; j++){
+					if (loadedLeagues[k].teams[i].substitutes[j]){
+						var newPlayer = new Player(k);
+						copyPlayer(loadedLeagues[k].teams[i].substitutes[j], newPlayer);
+						newPlayer.team = team;
+						team.substitutes.push(newPlayer);
+					}
+				}
+				//managers loaded at a different time TODO
+				team.schedule = loadedLeagues[k].teams[i].schedule; //index disambiguation happens after all teams are loaded
 			}
 			team.league = league;
 			league.teams.push(team);
 			league.sortedTeams.push(team);
+			//we'll forgo copyLeague() for now, because we load all the numbers we want right now
+		}
+		//Now that leagues->teams are consistent, lets fill out the schedules properly (team indexs to team pointers)
+		if (loading && state !== "pre-promo" && state !== "promo"){
+			//We don't want to do this during promos because some teams have been removed from their leagues
+			for (var i = 0; i < league.teams.length; i++){
+				for (var j = 0; j < league.teams[i].schedule.length; j++){
+					var g = league.teams[i].schedule[j];
+					if (league.teams[g.team1]){
+						g.team1 = league.teams[g.team1];
+					} else {
+						g.team1 = -1;
+					}
+					if (league.teams[g.team2]){
+						g.team2 = league.teams[g.team2];
+					} else {
+						g.team2 = -1;
+					}
+					if (g.team1 instanceof Team){
+						if (g.team1 === league.teams[i]){
+							var linkedGame = g.team2.schedule[j];
+							if (linkedGame.team1 instanceof Team){
+								league.teams[i].schedule[j] = linkedGame;
+								g = linkedGame;
+							}
+						} else {
+							var linkedGame = g.team1.schedule[j];
+							if (linkedGame.team1 instanceof Team){
+								league.teams[i].schedule[j] = linkedGame;
+								g = linkedGame;
+							}
+						}
+					} else {
+						if (league.teams[g.winner]){
+							g.winner = league.teams[g.winner];
+						} else {
+							g.winner = -1;
+						}
+						if (league.teams[g.loser]){
+							g.loser = league.teams[g.loser];
+						} else {
+							g.loser = -1;
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -2506,9 +2496,103 @@ function createLeagues(loading=false){
 	leagues[2].playoffs = 8;
 	leagues[2].playoffType = Bracket8TeamDoubleElimFull;
 	
+	leagues[3].playoffs = 16;
+	leagues[3].playoffType = Bracket16TeamBo3SingleElimWith3rdPlace;
+	
+	leagues[4].playoffs = 16;
+	leagues[4].playoffType = Bracket16TeamBo3SingleElimWith3rdPlace;
+	
 	leagues[25].topromote = 0;
 	
-	playerTeamCons = leagues[0].teams[0];
+	if (loading && (state === "pre-po" || state === "po")){
+		for (var i = 0; i < leagues.length; i++){
+			var loadedBracket = loadedLeagues[i].playoffBracket;
+			var dummyTeamParam = new Array(leagues[i].playoffs);
+			var placeholderBracket = new leagues[i].playoffType(dummyTeamParam, loadedBracket.length, loadedBracket.height);
+			copyBracket(loadedBracket, placeholderBracket);
+			placeholderBracket.matches = loadedBracket.matches;
+			for (var j = 0; j < loadedBracket.teams.length; j++){
+				if (leagues[i].teams[loadedBracket.teams[j]]){
+					loadedBracket.teams[j] = leagues[i].teams[loadedBracket.teams[j]];
+				}
+			}
+			for (var j = 0; j < loadedBracket.resultsRank.length; j++){
+				if (loadedBracket.resultsRank[j]){
+					if (leagues[i].teams[loadedBracket.resultsRank[j]]){
+						loadedBracket.resultsRank[j] = leagues[i].teams[loadedBracket.resultsRank[j]];
+					}
+				}
+			}
+			for (var j = 0; j < placeholderBracket.matches.length; j++){
+				var loadedMatch = placeholderBracket.matches[j];
+				if (loadedMatch.bestOf){ //A way of checking if the loadedMatch is a Match or a Game, beacause prototypes haven't been loaded
+					var match = new Match(1);
+					copyMatch(loadedMatch, match);
+					for (var k = 0 ; k < match.games.length; k++){
+						if (leagues[i].teams[match.games[k].team1]){
+							match.games[k].team1 = leagues[i].teams[match.games[k].team1];
+						} else {
+							match.games[k].team1 = -1;
+						}
+						if (leagues[i].teams[match.games[k].team2]){
+							match.games[k].team2 = leagues[i].teams[match.games[k].team2];
+						} else {
+							match.games[k].team2 = -1;
+						}
+						if (leagues[i].teams[match.games[k].winner]){
+							match.games[k].winner = leagues[i].teams[match.games[k].winner];
+						} else {
+							match.games[k].winner = -1;
+						}
+						if (leagues[i].teams[match.games[k].loser]){
+							match.games[k].loser = leagues[i].teams[match.games[k].loser];
+						} else {
+							match.games[k].loser = -1;
+						}
+					}
+					placeholderBracket.matches[j] = match;
+				}
+				//Game and Match have the same top level disambiguations.
+				var match = placeholderBracket.matches[j]; //reget the data in case it was a Match
+				if (leagues[i].teams[match.team1]){
+					match.team1 = leagues[i].teams[match.team1];
+				} else {
+					match.team1 = -1;
+				}
+				if (leagues[i].teams[match.team2]){
+					match.team2 = leagues[i].teams[match.team2];
+				} else {
+					match.team2 = -1;
+				}
+				if (leagues[i].teams[match.winner]){
+					match.winner = leagues[i].teams[match.winner];
+				} else {
+					match.winner = -1;
+				}
+				if (leagues[i].teams[match.loser]){
+					match.loser = leagues[i].teams[match.loser];
+				} else {
+					match.loser = -1;
+				}
+			}
+			leagues[i].playoffBracket = placeholderBracket;
+		}
+	}
+	if (loading && (state === 'pre-promo' || state === 'promo')){
+		//Load the promotion brackets
+	}
+	
+	if (loading){
+		if (state === 'per-promo' || state === 'promo'){
+			var promoInd = localStorage.getItem('playerPromoInd');
+			var playerInd = localStorage.getItem('playerInd');
+			playerTeamCons = promotions[promoInd].teams[playerInd];
+		} else {
+			playerTeamCons = leagues[currentLeague].teams[localStorage.getItem('playerInd')];
+		}
+	} else {
+		playerTeamCons = leagues[0].teams[0];
+	}
 	
 	leagues[0].name = "First Steps NewPro Series";
 	leagues[1].name = "Small-Time Delta League";
@@ -2539,13 +2623,92 @@ function createLeagues(loading=false){
 }
 
 function createRecruits(loading=false) {
-	for (var i = 0; i < numLeagues; i++){
-		var tierRecruits = [];
-		for (var j = 0; j < 10; j++){
-			tierRecruits.push(new Player(i));
+	recruits = [];
+	if (version == 1){
+		var r = JSON.parse(localStorage.getItem('recruits'));
+		for (var i = 0; i < r.length; i++){
+			var tierRecruits = [];
+			for (var j = 0; j < r[i].length; j++){
+				var player = new Player();
+				copyPlayer(r[i][j], player);
+				player.team = undefined;
+				tierRecruits.push(player);
+			}
+			recruits.push(tierRecruits);
 		}
-		recruits.push(tierRecruits);
+	} else {
+		for (var i = 0; i < numLeagues; i++){
+			var tierRecruits = [];
+			for (var j = 0; j < 10; j++){
+				tierRecruits.push(new Player(i));
+			}
+			recruits.push(tierRecruits);
+		}
 	}
+}
+
+function copyPlayer(fromPlayer, toPlayer){
+	//This function is to faciliate loading, so we can't just say toPlayer = fromPlayer
+	//because fromPlayer isn't a Player object, so doesn't have the prototype we need
+	toPlayer.name = fromPlayer.name;
+	toPlayer.strength = fromPlayer.strength;
+	toPlayer.strengthGrowth = fromPlayer.strengthGrowth;
+	toPlayer.skill = fromPlayer.skill;
+	toPlayer.skillGrowth = fromPlayer.skillGrowth;
+	toPlayer.endurance = fromPlayer.endurance;
+	toPlayer.enduranceGrowth = fromPlayer.enduranceGrowth;
+	toPlayer.charisma = fromPlayer.charisma;
+	toPlayer.charismaGrowth = fromPlayer.charismaGrowth;
+	toPlayer.clutch = fromPlayer.clutch;
+	toPlayer.clutchGrowth = fromPlayer.clutchGrowth;
+	toPlayer.salary = fromPlayer.salary;
+	toPlayer.contract = fromPlayer.contract;
+	toPlayer.level = fromPlayer.level;
+	toPlayer.experience = fromPlayer.experience;
+	toPlayer.points = fromPlayer.points;
+	toPlayer.tier = fromPlayer.tier;
+	toPlayer.askingPrice = fromPlayer.askingPrice;
+	toPlayer.lastOfferMadeOn = fromPlayer.lastOfferMadeOn;
+}
+
+function copyTeam(fromTeam, toTeam){
+	toTeam.name = fromTeam.name;
+	toTeam.trainers = fromTeam.trainers;
+	toTeam.coaches = fromTeam.coaches;
+	toTeam.money = fromTeam.money;
+	toTeam.wins = fromTeam.wins;
+	toTeam.loss = fromTeam.loss;
+	toTeam.pointsFor = fromTeam.pointsFor;
+	toTeam.pointsAgainst = fromTeam.pointsAgainst;
+	toTeam.maxSubs = fromTeam.maxSubs;
+	toTeam.sponsors = fromTeam.sponsors;
+}
+
+function copyLeague(fromLeague, toLeague){
+	//Honestly everything is subject to so much balance changes in Leagues, I hesitate to copy anything back
+	toLeague.topromote = fromLeague.topromote;
+	toLeague.playoffs = fromLeague.playoffs;
+	toLeague.todemote = fromLeague.todemote;
+	toLeague.seasonSetup = fromLeague.seasonSetup;
+}
+
+function copyBracket(fromBracket, toBracket){
+	toBracket.teams = formBracket.teams; //To be disambiguated later
+	toBracket.resultsRank = fromBracket.resultsRank; //?, Not actaully sure if this will still work
+	toBracket.playing = fromBracket.playing;
+	toPlaying.over = fromBracket.over;
+}
+
+function copyMatch(fromMatch, toMatch){
+	toMatch.bestOf = fromMatch.bestOf;
+	toMatch.team1wins = fromMatch.team1wins;
+	toMatch.team2wins = fromMatch.team2wins;
+	toMatch.games = fromMatch.games;
+	toMatch.played = fromMatch.played;
+	toMatch.team1 = fromMatch.team1;
+	toMatch.team2 = fromMatch.team2;
+	toMatch.winner = fromMatch.winner;
+	toMatch.loser = fromMatch.loser;
 }
 
 function playTick(game, quarter){
