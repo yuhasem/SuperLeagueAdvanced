@@ -542,7 +542,9 @@ function onload() {
 	if (version > 0){
 		state = localStorage.getItem('state');
 		currentLeague = localStorage.getItem('curLeague');
+		currentLeague *= 1; //Forces it to be a number instead of a string.
 		currentGame = localStorage.getItem('curGame');
+		currentGame *= 1;
 		allTime = JSON.parse(localStorage.getItem('allTime'));
 		allTime.money = parseFloat(allTime.money)
 	}
@@ -2262,7 +2264,8 @@ function gameSave(){
 	//Most everything else should be determined at start up (downloaded fresh in case of passive update)
 	
 	//With all objects as fields, I need to return the stringify of that object (actuall makes playoffBracket easier, in a way)
-	localStorage.setItem('leagues', JSON.stringify(leagues, function (key, val){
+	var textA = 
+	/*localStorage.setItem('leagues',*/ JSON.stringify(leagues, function (key, val){
 		//Here we make sure we don't recurse through the object
 		//console.log("KEY: " + key + ", VAL: " + val);
 		if (key === 'sortedTeams'){
@@ -2304,11 +2307,17 @@ function gameSave(){
 			if (this[key] == -1){
 				return -1;
 			} else {
+				if (!this[key].league){
+					console.log(this[key]);
+					console.log(key);
+				}
 				return this[key].league.teams.indexOf(this[key]);
 			}
 		}
 		return val;
-	}));
+	})/*)*/;
+	console.log(textA.length);
+	localStorage.setItem('leagues', textA);
 	localStorage.setItem('recruits', JSON.stringify(recruits, function (key, val){
 		if (key === 'team'){
 			return 0;
@@ -2475,7 +2484,8 @@ function createLeagues(loading){
 								g = linkedGame;
 							}
 						}
-					} else {
+					}
+					if (!(g.winner instanceof Team)){
 						if (league.teams[g.winner]){
 							g.winner = league.teams[g.winner];
 						} else {
@@ -2570,6 +2580,7 @@ function createLeagues(loading){
 				} else {
 					match.team2 = -1;
 				}
+				console.log(leagues[i].teams[match.winner]);
 				if (leagues[i].teams[match.winner]){
 					match.winner = leagues[i].teams[match.winner];
 				} else {
